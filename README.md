@@ -1,46 +1,51 @@
-# EXp_03_-Entity-Student-and-build-a-CRUD-operations-using-Spring-Boot-Hibernate-Configuration
+# EXP_03 - Entity Student and CRUD Operations Using Spring Boot Hibernate Configuration
 
-## AIM:
+## AIM
+
 To develop a Spring Boot application that performs CRUD (Create, Read, Update, Delete) operations on a Student entity using Spring Data JPA (Hibernate).
 
-## ALGORITHM:
-Create Spring Boot Project
+## ALGORITHM
 
-Add dependencies: Spring Web, Spring Data JPA, H2 Database or MySQL, Spring Boot DevTools
+### 1. Create Spring Boot Project
 
-Configure application.properties
+Add dependencies:
 
-Define database connection
+* Spring Web
+* Spring Data JPA
+* H2 Database or MySQL
+* Spring Boot DevTools
 
-Enable Hibernate auto DDL
+### 2. Configure application.properties
 
-Create Student Entity Class
+* Define database connection
+* Enable Hibernate auto DDL
 
-Annotate with @Entity
+### 3. Create Student Entity Class
 
-Define fields with @Id, @GeneratedValue, etc.
+* Annotate with `@Entity`
+* Define fields with `@Id`, `@GeneratedValue`, etc.
 
-Create StudentRepository
+### 4. Create StudentRepository
 
-Extend JpaRepository<Student, Long> for CRUD methods
+Extend `JpaRepository<Student, Long>` for CRUD methods.
 
-Create StudentController
+### 5. Create StudentController
 
 Handle HTTP methods:
 
-POST /students → Add student
+| HTTP Method | Endpoint         | Operation         |
+| ----------- | ---------------- | ----------------- |
+| POST        | `/students`      | Add student       |
+| GET         | `/students`      | Get all students  |
+| GET         | `/students/{id}` | Get student by ID |
+| PUT         | `/students/{id}` | Update student    |
+| DELETE      | `/students/{id}` | Delete student    |
 
-GET /students → Get all students
-
-GET /students/{id} → Get student by ID
-
-PUT /students/{id} → Update student
-
-DELETE /students/{id} → Delete student
-
-##PROGRAM CODE
+## PROGRAM CODE
 
 ### pom.xml
+
+```xml
 <dependencies>
     <!-- Spring Boot Web -->
     <dependency>
@@ -61,55 +66,94 @@ DELETE /students/{id} → Delete student
         <scope>runtime</scope>
     </dependency>
 </dependencies>
- ### application.properties
+```
 
+### application.properties
+
+```properties
 spring.datasource.url=jdbc:h2:mem:testdb
 spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.username=sa
 spring.datasource.password=
 spring.jpa.hibernate.ddl-auto=update
 spring.h2.console.enabled=true
+```
+
 ### Student.java
-package com.example.demo.model;
-import jakarta.persistence.*;
+
+```java
+package com.example.ex3.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 @Entity
 public class Student {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String department;
     private int age;
-    // Getters and Setters
-    public Long getId() { return id; }
 
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
 
-    public String getDepartment() { return department; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public void setDepartment(String department) { this.department = department; }
+    public String getDepartment() {
+        return department;
+    }
 
-    public int getAge() { return age; }
+    public void setDepartment(String department) {
+        this.department = department;
+    }
 
-    public void setAge(int age) { this.age = age; }
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
 }
-### StudentRepository.java
-package com.example.demo.repository;
+```
 
-import com.example.demo.model.Student;
+### StudentRepository.java
+
+```java
+package com.example.ex3.repository;
+
+import com.example.ex3.model.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
-}
-### StudentController.java
-package com.example.demo.controller;
 
-import com.example.demo.model.Student;
-import com.example.demo.repository.StudentRepository;
+}
+```
+
+### StudentController.java
+
+```java
+package com.example.ex3.controller;
+
+import com.example.ex3.model.Student;
+import com.example.ex3.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -139,29 +183,71 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public Student updateStudent(@PathVariable Long id, @RequestBody Student studentDetails) {
+    public Student updateStudent(
+            @PathVariable Long id,
+            @RequestBody Student studentDetails) {
+
         Student student = studentRepository.findById(id).orElseThrow();
+
         student.setName(studentDetails.getName());
-        student.setAge(studentDetails.getAge());
         student.setDepartment(studentDetails.getDepartment());
+        student.setAge(studentDetails.getAge());
+
         return studentRepository.save(student);
     }
 
     @DeleteMapping("/{id}")
     public String deleteStudent(@PathVariable Long id) {
+
         studentRepository.deleteById(id);
+
         return "Student with ID " + id + " deleted successfully!";
     }
 }
+```
+
 ### DemoApplication.java
-package com.example.demo;
+
+```java
+package com.example.ex3;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DemoApplication {
+public class Ex3Application {
+
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(Ex3Application.class, args);
     }
+
 }
+```
+
+### OUTPUT
+
+#### POST /students
+<img width="959" height="599" alt="image" src="https://github.com/user-attachments/assets/94cd27ee-af1d-45d3-9307-79a4ab8335c8" />
+
+#### GET /students
+<img width="959" height="599" alt="image" src="https://github.com/user-attachments/assets/6e93097c-4a0d-47a8-854f-d735baa5a9c3" />
+
+
+#### GET /students/:id
+<img width="959" height="598" alt="image" src="https://github.com/user-attachments/assets/d01d08d8-0a36-4f61-a997-7c407c1509b8" />
+
+
+#### PUT /students/:id
+<img width="959" height="599" alt="image" src="https://github.com/user-attachments/assets/bbf722c8-88b2-4a31-8c53-98e96ed4295f" />
+
+
+#### DELETE /students/:id
+<img width="959" height="599" alt="image" src="https://github.com/user-attachments/assets/18e3e135-dbe7-4d73-a0c2-579df7e277ea" />
+
+### RESULT 
+Thus, the Spring Boot application was successfully developed to perform CRUD (Create, Read, Update, Delete) operations on the Student entity using Spring Data JPA (Hibernate).
+
+
+
+
+
