@@ -244,6 +244,7 @@ public class Ex3Application {
 #### DELETE /students/:id
 <img width="959" height="599" alt="image" src="https://github.com/user-attachments/assets/18e3e135-dbe7-4d73-a0c2-579df7e277ea" />
 
+---
 ### RESULT 
 Thus, the Spring Boot application was successfully developed to perform CRUD (Create, Read, Update, Delete) operations on the Student entity using Spring Data JPA (Hibernate).
 
